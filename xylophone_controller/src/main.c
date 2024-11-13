@@ -8,14 +8,12 @@
  */
 
 // -- Includes -------------------------------------------------------
-#include <avr/io.h>         // AVR device-specific IO definitions
-#include <avr/interrupt.h>  // Interrupts standard C library for AVR-GCC
-#include "timer.h"          // Timer library for AVR-GCC
-#include <uart.h>           // Peter Fleury's UART library
-#include <stdlib.h>         // C library. Needed for number conversions
+#include <avr/io.h>        // AVR device-specific IO definitions
+#include <avr/interrupt.h> // Interrupts standard C library for AVR-GCC
+#include "timer.h"         // Timer library for AVR-GCC
+#include <uart.h>          // Peter Fleury's UART library
+#include <stdlib.h>        // C library. Needed for number conversions
 #include "xylophone.h"
-
-
 
 // -- Function definitions -------------------------------------------
 /*
@@ -26,7 +24,6 @@
 int main(void)
 {
     uint16_t value;
-   
 
     // Initialize USART to asynchronous, 8-N-1, 9600 Bd
     uart_init(UART_BAUD_SELECT(9600, F_CPU));
@@ -45,18 +42,16 @@ int main(void)
     {
         // Get received data from UART
         value = uart_getc();
-        if ((value & 0xff00) == 0)  // If successfully received data from UART
+        if ((value & 0xff00) == 0) // If successfully received data from UART
         {
             uint8_t note = (value & 0xff) - '0';
             play_note(note, 127);
-             
         }
     }
 
     // Will never reach this
     return 0;
 }
-
 
 // -- Interrupt service routines -------------------------------------
 /*
