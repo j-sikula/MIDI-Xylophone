@@ -1,6 +1,6 @@
 #include "xylophone.h"
 #include "gpio.h"
-#include "gpio.c"
+#include "uart.h"
 
 volatile uint8_t currentNote = 0;
 volatile uint8_t is_note_playing = 0;
@@ -14,8 +14,8 @@ void init_xylophone()
     GPIO_mode_output(&DDRD, NOTE_F1);
     GPIO_mode_output(&DDRD, NOTE_G1);
     GPIO_mode_output(&DDRD, NOTE_A1);
-    GPIO_mode_output(&DDRD, NOTE_H1);
-    GPIO_mode_output(&DDRD, NOTE_C2);
+    GPIO_mode_output(&DDRB, NOTE_H1);
+    GPIO_mode_output(&DDRB, NOTE_C2);
 
     GPIO_write_low(&PORTD, NOTE_C1);
     GPIO_write_low(&PORTD, NOTE_D1);
@@ -23,8 +23,8 @@ void init_xylophone()
     GPIO_write_low(&PORTD, NOTE_F1);
     GPIO_write_low(&PORTD, NOTE_G1);
     GPIO_write_low(&PORTD, NOTE_A1);
-    GPIO_write_low(&PORTD, NOTE_H1);
-    GPIO_write_low(&PORTD, NOTE_C2);
+    GPIO_write_low(&PORTB, NOTE_H1);
+    GPIO_write_low(&PORTB, NOTE_C2);
 }
 
 void play_note(uint8_t note, uint8_t velocity)
@@ -67,11 +67,11 @@ void write_high_note(uint8_t note)
         break;
 
     case 6:
-        GPIO_write_high(&PORTD, NOTE_H1);
+        GPIO_write_high(&PORTB, NOTE_H1);
         break;
 
     case 7:
-        GPIO_write_high(&PORTD, NOTE_C2);
+        GPIO_write_high(&PORTB, NOTE_C2);
         break;
     }
 }
@@ -105,11 +105,11 @@ void write_low_note(uint8_t note)
         break;
 
     case 6:
-        GPIO_write_low(&PORTD, NOTE_H1);
+        GPIO_write_low(&PORTB, NOTE_H1);
         break;
 
     case 7:
-        GPIO_write_low(&PORTD, NOTE_C2);
+        GPIO_write_low(&PORTB, NOTE_C2);
         break;
     }
 }
@@ -123,5 +123,6 @@ void timer_routine()
     else
     {
         write_low_note(currentNote);
+        is_note_playing = 0;
     }
 }

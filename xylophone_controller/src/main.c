@@ -26,11 +26,11 @@ int main(void)
     uint16_t value;
 
     // Initialize USART to asynchronous, 8-N-1, 9600 Bd
-    uart_init(UART_BAUD_SELECT(9600, F_CPU));
+    uart_init(UART_BAUD_SELECT(115200, F_CPU));
 
-    TIM1_ovf_1sec();
-    // TIM1_ovf_enable();
     TIM0_ovf_1ms();
+    TIM0_ovf_enable();
+    
 
     // Interrupts must be enabled, bacause of `uart_puts()`
     sei();
@@ -58,7 +58,7 @@ int main(void)
  * Function: Timer/Counter1 overflow interrupt
  * Purpose:  Note pulse generation
  */
-ISR(TIMER1_OVF_vect)
+ISR(TIMER0_OVF_vect)
 {
     timer_routine();
 }
