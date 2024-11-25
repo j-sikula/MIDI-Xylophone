@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:developer';
 
 import 'package:flutter_libserialport/flutter_libserialport.dart';
@@ -8,13 +9,16 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 void readData(SerialPortHandler? serialPortHandler) async {
   log('Reading data');
   Timer.periodic(const Duration(microseconds: 10), (timer) {
-    log("Time: ${timer.tick}");
-    while (serialPortHandler!.isPortOpen) {
+     if (!serialPortHandler!.isPortOpen) {
+        timer.cancel();
+        return;
+      }
       final data = serialPortHandler.serialPort!.read(1);
       if (data.isNotEmpty) {
-        log('Data: $data');
+        
+        serialPortHandler.dataQueue.add(data[0]);
+        log('Data: ${String.fromCharCodes(data)}');
       }
-    }
   });
   /*
   */
@@ -26,6 +30,7 @@ class SerialPortHandler {
 
   bool isPortOpen = false;  // Flag to check if the port is open
   SerialPort? serialPort;
+  final Queue<int> dataQueue = Queue<int>(); // FIFO Buffer - Queue to store the data read from the serial port
 
   // Constructor
   SerialPortHandler(this.baudRate, this.portName) {

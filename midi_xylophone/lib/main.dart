@@ -25,7 +25,7 @@ SOFTWARE.
 //
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
-import 'package:midi_xylophone/serial_port.dart';
+import 'package:midi_xylophone/serial_port_selector.dart';
 
 void main() => runApp(const ExampleApp());
 

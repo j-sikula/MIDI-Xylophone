@@ -59,7 +59,7 @@ int main(void)
  */
 ISR(TIMER0_OVF_vect)
 {
-    uart_puts("A\n");
+   
     static uint8_t index = 0;
     if (index >= 255)
     {

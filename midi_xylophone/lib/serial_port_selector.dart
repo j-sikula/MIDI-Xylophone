@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:midi_xylophone/control/serial_port_handler.dart';
+import 'package:midi_xylophone/serial_monitor.dart';
 
 /// SerialPortSelector widget
 
@@ -38,10 +39,12 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
 
   /// Callback function to open and close the selected port
   void openAndClosePort() {
-    if (serialPortHandler == null ||
-        serialPortHandler!.portName != _selectedPort) {
+    if (_selectedPort != null && (serialPortHandler == null ||
+        serialPortHandler!.portName != _selectedPort)) {
       //to create a new instance of SerialPortHandler
       serialPortHandler = SerialPortHandler(widget.baudRate, _selectedPort!);
+    } else {
+      return;
     }
     if (!serialPortHandler!.isPortOpen) {
       //to open the port
@@ -97,6 +100,8 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
             child: Text(openCloseBtnLabel),
           ),
         ),
+
+        SerialMonitor(serialPortHandler: serialPortHandler)
       ],
     );
   }
