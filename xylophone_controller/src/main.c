@@ -30,7 +30,6 @@ int main(void)
 
     TIM0_ovf_1ms();
     TIM0_ovf_enable();
-    
 
     // Interrupts must be enabled, bacause of `uart_puts()`
     sei();
@@ -60,5 +59,17 @@ int main(void)
  */
 ISR(TIMER0_OVF_vect)
 {
+    uart_puts("A\n");
+    static uint8_t index = 0;
+    if (index >= 255)
+    {
+        uart_putc('a');
+        index = 0;
+    }
+    else
+    {
+        index++;
+    }
+
     timer_routine();
 }

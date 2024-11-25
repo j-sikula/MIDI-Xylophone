@@ -1,31 +1,14 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
-
-/// Read data from the serial port
-
-void readData(SerialPort? serialPort) async {
-  log('Reading data');
-  Timer.periodic(const Duration(microseconds: 10), (timer) {
-    log("Time: ${timer.tick}");
-    while (true) {
-    final data = serialPort!.read(2);
-    if (data.isNotEmpty) {
-      log('Data received: $data');
-    }
-  }
-  });
-  /*
-  */
-}
+import 'package:midi_xylophone/control/serial_port_handler.dart';
 
 /// SerialPortSelector widget
 
 class SerialPortSelector extends StatefulWidget {
-  const SerialPortSelector({super.key, this.baudRate = 9600});
+  const SerialPortSelector({super.key, this.baudRate = 115200});
   final int baudRate;
 
   @override
@@ -37,8 +20,7 @@ class SerialPortSelector extends StatefulWidget {
 class SerialPortSelectorState extends State<SerialPortSelector> {
   List<String> _availablePorts = [];
   String? _selectedPort;
-  SerialPort? serialPort;
-  bool _isPortOpen = false;
+  SerialPortHandler? serialPortHandler;
   String openCloseBtnLabel = 'Open Port';
   Isolate? _isolateSerialRead;
 
@@ -55,41 +37,35 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
   }
 
   /// Callback function to open and close the selected port
-
-  void _openAndClosePort() {
-    if (!_isPortOpen) {
-      if (_selectedPort != null) {
-        serialPort = SerialPort(_selectedPort!);
-        final portconfig = SerialPortConfig();
-        portconfig.baudRate = 115200;
-
-        if (serialPort!.openReadWrite()) {
-          serialPort!.config =
-              portconfig; // Set the port configuration immedietly after opening the port
-          _isPortOpen = true;
-          log('Port opened successfully');
-          startIsolate();
-          log('Program is reading data on background');
-          setState(() {
-            openCloseBtnLabel = 'Close ${_selectedPort!} Port';
-          });
-        } else {
-          log('Failed to open port');
-        }
+  void openAndClosePort() {
+    if (serialPortHandler == null ||
+        serialPortHandler!.portName != _selectedPort) {
+      //to create a new instance of SerialPortHandler
+      serialPortHandler = SerialPortHandler(widget.baudRate, _selectedPort!);
+    }
+    if (!serialPortHandler!.isPortOpen) {
+      //to open the port
+      if (serialPortHandler!.openPort()) {
+        startIsolate();
+        setState(() {
+          openCloseBtnLabel = 'Close ${_selectedPort!} Port';
+        });
       }
     } else {
+      //to close the port
       _isolateSerialRead?.kill(priority: Isolate.immediate);
-      serialPort!.close();
-      _isPortOpen = false;
-      log('Port closed');
-      setState(() {
-        openCloseBtnLabel = 'Open Port';
-      });
+      if (serialPortHandler!.closePort()) {
+        setState(() {
+          openCloseBtnLabel = 'Open Port';
+        });
+      }
     }
   }
 
+  /// Function to start independent thread
+  /// reads data from the serial port
   Future<void> startIsolate() async {
-    _isolateSerialRead = await Isolate.spawn(readData, serialPort);
+    _isolateSerialRead = await Isolate.spawn(readData, serialPortHandler);
   }
 
   @override
@@ -117,7 +93,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
         Container(
           margin: const EdgeInsets.only(left: 10),
           child: ElevatedButton(
-            onPressed: _openAndClosePort,
+            onPressed: openAndClosePort,
             child: Text(openCloseBtnLabel),
           ),
         ),
