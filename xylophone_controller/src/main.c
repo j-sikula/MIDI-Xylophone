@@ -14,6 +14,7 @@
 #include <uart.h>          // Peter Fleury's UART library
 #include <stdlib.h>        // C library. Needed for number conversions
 #include "xylophone.h"
+#include <stdio.h>
 
 // -- Function definitions -------------------------------------------
 /*
@@ -30,22 +31,36 @@ int main(void)
 
     TIM0_ovf_1ms();
     TIM0_ovf_enable();
-    
 
     // Interrupts must be enabled, bacause of `uart_puts()`
     sei();
 
     init_xylophone();
 
+    uint8_t volume;
+    uint8_t is_reading_velocity = 0;
+
     // Infinite loop
     while (1)
     {
         // Get received data from UART
         value = uart_getc();
+        
         if ((value & 0xff00) == 0) // If successfully received data from UART
         {
-            uint8_t note = (value & 0xff) - '0';
-            play_note(note, 127);
+
+            if (!is_reading_velocity)
+            {
+                volume = (value & 0xff);
+                is_reading_velocity = 1;
+            }
+
+            else
+            {
+                is_reading_velocity = 0;
+                uint8_t note = (value & 0xff) - '0';
+                play_note(note, volume);
+            }
         }
     }
 

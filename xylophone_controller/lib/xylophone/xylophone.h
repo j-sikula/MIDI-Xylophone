@@ -12,8 +12,9 @@
 #define NOTE_H1 PB0
 #define NOTE_C2 PB1
 
-#define MAX_NOTE_ON 40
-#define MAX_VELOCITY 127
+#define MAX_NOTE_ON 40 // number of ms
+#define MAX_VELOCITY 127 // maximum number
+#define MIN_VELOCITY 70
 
 void init_xylophone();
 
