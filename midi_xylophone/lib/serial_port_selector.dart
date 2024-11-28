@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:isolate';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:midi_xylophone/control/serial_port_handler.dart';
@@ -23,7 +20,9 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
   String? _selectedPort;
   SerialPortHandler? serialPortHandler;
   String openCloseBtnLabel = 'Open Port';
-  Isolate? _isolateSerialRead;
+  bool isPortOpen = false;  // disables dropdown when port is open, prevents changing port while port is open
+  final GlobalKey<SerialMonitorState> _serialMonitorKey =
+      GlobalKey<SerialMonitorState>(); // Key to access the SerialMonitor widget
 
   @override
   void initState() {
@@ -39,36 +38,36 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
 
   /// Callback function to open and close the selected port
   void openAndClosePort() {
-    if (_selectedPort != null && (serialPortHandler == null ||
-        serialPortHandler!.portName != _selectedPort)) {
-      //to create a new instance of SerialPortHandler
-      serialPortHandler = SerialPortHandler(widget.baudRate, _selectedPort!);
+    if (_selectedPort != null) {
+      if (serialPortHandler == null ||
+          serialPortHandler!.portName != _selectedPort) {
+        // creates a new instance of SerialPortHandler class
+        // if the serialPortHandler is not initialized or the port is changed
+        serialPortHandler = SerialPortHandler(widget.baudRate, _selectedPort!);
+      }
     } else {
+      // if no port is selected
       return;
     }
+
     if (!serialPortHandler!.isPortOpen) {
       //to open the port
       if (serialPortHandler!.openPort()) {
-        startIsolate();
+        _serialMonitorKey.currentState!.enableListening();
         setState(() {
           openCloseBtnLabel = 'Close ${_selectedPort!} Port';
         });
       }
     } else {
       //to close the port
-      _isolateSerialRead?.kill(priority: Isolate.immediate);
       if (serialPortHandler!.closePort()) {
+        _serialMonitorKey.currentState!.stopListening();
+
         setState(() {
           openCloseBtnLabel = 'Open Port';
         });
       }
     }
-  }
-
-  /// Function to start independent thread
-  /// reads data from the serial port
-  Future<void> startIsolate() async {
-    _isolateSerialRead = await Isolate.spawn(readData, serialPortHandler);
   }
 
   @override
@@ -77,18 +76,19 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
       children: [
         Container(
           margin: const EdgeInsets.all(10),
-          child: DropdownButton<String>(
-            hint: const Text('Select Serial Port'),
-            value: _selectedPort,
-            onChanged: (String? newValue) {
+          child: DropdownMenu<String>(
+            initialSelection: _selectedPort,
+            label: const Text('Select Port'),
+            onSelected: (String? newValue) {
               setState(() {
                 _selectedPort = newValue;
               });
             },
-            items: _availablePorts.map<DropdownMenuItem<String>>((String port) {
-              return DropdownMenuItem<String>(
+            dropdownMenuEntries: _availablePorts.map<DropdownMenuEntry<String>>((String port) {
+              return DropdownMenuEntry<String>(
                 value: port,
-                child: Text(port),
+                label: port,
+                enabled: !isPortOpen,
               );
             }).toList(),
           ),
@@ -100,8 +100,8 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
             child: Text(openCloseBtnLabel),
           ),
         ),
-
-        SerialMonitor(serialPortHandler: serialPortHandler)
+        SerialMonitor(
+            key: _serialMonitorKey, serialPortHandler: serialPortHandler),
       ],
     );
   }
