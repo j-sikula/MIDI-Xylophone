@@ -24,7 +24,6 @@ SOFTWARE.
  */
 //
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:midi_xylophone/serial_port_selector.dart';
 
 void main() => runApp(const ExampleApp());
@@ -36,35 +35,12 @@ class ExampleApp extends StatefulWidget {
   ExampleAppState createState() => ExampleAppState();
 }
 
-extension IntToString on int {
-  String toHex() => '0x${toRadixString(16)}';
-  String toPadded([int width = 3]) => toString().padLeft(width, '0');
-  String toTransport() {
-    switch (this) {
-      case SerialPortTransport.usb:
-        return 'USB';
-      case SerialPortTransport.bluetooth:
-        return 'Bluetooth';
-      case SerialPortTransport.native:
-        return 'Native';
-      default:
-        return 'Unknown';
-    }
-  }
-}
-
 class ExampleAppState extends State<ExampleApp> {
-  var availablePorts = [];
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    initPorts();
-  }
-
-  void initPorts() {
-    setState(() => availablePorts = SerialPort.availablePorts);
   }
 
   @override
@@ -78,27 +54,26 @@ class ExampleAppState extends State<ExampleApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter Serial Port example'),
+          title: const Text('MIDIx Xylophone'),
         ),
-        body: 
-        const SerialPortSelector(),
-      ),
-    );
-  }
-}
-
-class CardListTile extends StatelessWidget {
-  final String name;
-  final String? value;
-
-  const CardListTile(this.name, this.value, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(value ?? 'N/A'),
-        subtitle: Text(name),
+        body: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: const EdgeInsets.all(10),
+              child: Text("MIDIx source",
+                  style: Theme.of(context).textTheme.headlineLarge),
+            ),
+            const SerialPortSelector(),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: const EdgeInsets.all(10),
+              child: Text("Xylophone - MIDIx target",
+                  style: Theme.of(context).textTheme.headlineLarge),
+            ),
+            const SerialPortSelector(),
+          ],
+        ),
       ),
     );
   }

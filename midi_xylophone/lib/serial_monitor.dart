@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:midi_xylophone/control/serial_port_handler.dart';
 
@@ -13,7 +15,7 @@ class SerialMonitor extends StatefulWidget {
 class SerialMonitorState extends State<SerialMonitor> {
   String displayText = '';
   final ScrollController _scrollController = ScrollController();
-  final int maxLines = 30;  // Maximum number of lines to display in the serial monitor
+  final int maxLines = 6;  // Maximum number of lines to display in the serial monitor
 
   void clearDisplayText() {
     setState(() {
@@ -39,9 +41,6 @@ class SerialMonitorState extends State<SerialMonitor> {
         child: Column(
           children: [
             const Text('Serial Monitor'),
-            if (widget.serialPortHandler != null)
-              Text('Baud Rate: ${widget.serialPortHandler!.baudRate}'),
-            const Text('Data:'),
             Center(
               child: widget.serialPortHandler != null
               ? StreamBuilder<String>(
@@ -50,8 +49,8 @@ class SerialMonitorState extends State<SerialMonitor> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator(); // Display a loading indicator when waiting for data.
                     } else if (snapshot.hasError) {
-                      return Text(
-                          'Error: ${snapshot.error}'); // Display an error message if an error occurs.
+                      log('Error: ${snapshot.error}');
+                      return const Text("No serial monitor available"); // Display an error message if an error occurs.
                     } else if (snapshot.hasData) {
                       displayText += '${snapshot.data}'; // Append new data to displayText.
                       List<String> lines = displayText.split('\n');
@@ -66,9 +65,10 @@ class SerialMonitorState extends State<SerialMonitor> {
                           curve: Curves.easeOut,
                         );
                       });
-                      return Text(
-                        displayText,
-                        style: const TextStyle(fontSize: 14),
+                      return TextField(
+                        maxLines: 6,
+                        controller: TextEditingController(text: displayText),
+                        readOnly: true,
                       ); // Display the accumulated data.
                     } else {
                       return const Text(

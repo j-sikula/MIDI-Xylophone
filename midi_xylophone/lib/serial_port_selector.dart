@@ -22,9 +22,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
   String openCloseBtnLabel = 'Open Port';
   bool isPortOpen =
       false; // disables dropdown when port is open, prevents changing port while port is open
-  final GlobalKey<SerialMonitorState> _serialMonitorKey =
-      GlobalKey<SerialMonitorState>(); // Key to access the SerialMonitor widget
-
+  final GlobalKey<SerialMonitorState> _serialMonitorKey = GlobalKey();
   @override
   void initState() {
     super.initState();
@@ -77,6 +75,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
         Container(
           margin: const EdgeInsets.all(10),
           child: DropdownMenu<String>(
+            enabled: !isPortOpen,
             initialSelection: _selectedPort,
             label: const Text('Select Port'),
             onSelected: (String? newValue) {
@@ -101,8 +100,13 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
             child: Text(openCloseBtnLabel),
           ),
         ),
-        SerialMonitor(
-            key: _serialMonitorKey, serialPortHandler: serialPortHandler),
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            child: SerialMonitor(
+                key: _serialMonitorKey, serialPortHandler: serialPortHandler),
+          ),
+        ),
       ],
     );
   }
