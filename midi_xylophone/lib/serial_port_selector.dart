@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:midi_xylophone/control/serial_port_handler.dart';
@@ -6,8 +9,9 @@ import 'package:midi_xylophone/serial_monitor.dart';
 /// SerialPortSelector widget
 
 class SerialPortSelector extends StatefulWidget {
-  const SerialPortSelector({super.key, this.baudRate = 115200});
+  const SerialPortSelector({super.key, this.baudRate = 115200, this.keySerialPortMIDISource});
   final int baudRate;
+  final GlobalKey<SerialPortSelectorState>? keySerialPortMIDISource;
 
   @override
   SerialPortSelectorState createState() => SerialPortSelectorState();
@@ -52,6 +56,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
     if (!serialPortHandler!.isPortOpen) {
       //to open the port
       if (serialPortHandler!.openPort()) {
+        sendDataToXylophone();  // Sends data to the Xylophone if defined MIDI source
         setState(() {
           openCloseBtnLabel = 'Close ${_selectedPort!} Port';
           isPortOpen = true;
@@ -66,6 +71,24 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
         });
       }
     }
+  }
+
+  /// Sends data to the Xylophone
+  /// Listens to the received data from the keySerialPortMIDISource
+  /// writes the data to the serial port
+  /// Returns true if successful begin of data transfer
+  bool sendDataToXylophone() {
+    if (widget.keySerialPortMIDISource != null && widget.keySerialPortMIDISource!.currentState!.serialPortHandler != null) {
+      widget.keySerialPortMIDISource!.currentState!.serialPortHandler!.receivedBytes!.listen((Uint8List data) {
+       serialPortHandler!.serialPort!.write(data);
+      });
+      
+      return true;
+    } else {
+      log('No SerialPortHandler of Xylophone');
+      return false;
+    }
+    
   }
 
   @override
