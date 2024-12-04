@@ -20,7 +20,8 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
   String? _selectedPort;
   SerialPortHandler? serialPortHandler;
   String openCloseBtnLabel = 'Open Port';
-  bool isPortOpen = false;  // disables dropdown when port is open, prevents changing port while port is open
+  bool isPortOpen =
+      false; // disables dropdown when port is open, prevents changing port while port is open
   final GlobalKey<SerialMonitorState> _serialMonitorKey =
       GlobalKey<SerialMonitorState>(); // Key to access the SerialMonitor widget
 
@@ -53,18 +54,17 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
     if (!serialPortHandler!.isPortOpen) {
       //to open the port
       if (serialPortHandler!.openPort()) {
-        _serialMonitorKey.currentState!.enableListening();
         setState(() {
           openCloseBtnLabel = 'Close ${_selectedPort!} Port';
+          isPortOpen = true;
         });
       }
     } else {
       //to close the port
       if (serialPortHandler!.closePort()) {
-        _serialMonitorKey.currentState!.stopListening();
-
         setState(() {
           openCloseBtnLabel = 'Open Port';
+          isPortOpen = false;
         });
       }
     }
@@ -84,7 +84,8 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
                 _selectedPort = newValue;
               });
             },
-            dropdownMenuEntries: _availablePorts.map<DropdownMenuEntry<String>>((String port) {
+            dropdownMenuEntries:
+                _availablePorts.map<DropdownMenuEntry<String>>((String port) {
               return DropdownMenuEntry<String>(
                 value: port,
                 label: port,
