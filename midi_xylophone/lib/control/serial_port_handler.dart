@@ -13,8 +13,9 @@ class SerialPortHandler {
       true; // after closing port, try to open it only once again
   SerialPort? serialPort;
 
-  late StreamController<String> _receivedDataController;
-  late StreamController<Uint8List> _receivedBytesController;
+  late SerialPortReader reader;
+  late StreamController<String> receivedDataController;
+  late StreamController<Uint8List> receivedBytesController;
   Stream<String>? receivedData;
   Stream<Uint8List>? receivedBytes;
 
@@ -23,17 +24,19 @@ class SerialPortHandler {
     // Initialize the serial port
     serialPort = SerialPort(portName);
 
-    _receivedDataController = StreamController<String>.broadcast();
-    _receivedBytesController = StreamController<Uint8List>.broadcast();
+    receivedDataController = StreamController<String>.broadcast();
+    receivedBytesController = StreamController<Uint8List>.broadcast();
 
-    receivedData = _receivedDataController.stream;
-    receivedBytes = _receivedBytesController.stream;
+    receivedData = receivedDataController.stream;
+    receivedBytes = receivedBytesController.stream;
   }
 
   /// Closes the serial port
-  bool closePort() {
+  Future<bool> closePort() async{
+    reader.close();
     if (serialPort!.close()) {
       isPortOpen = false;
+
       log('Port closed successfully');
       return true;
     } else {
@@ -46,7 +49,7 @@ class SerialPortHandler {
   /// configuration 8N1
   ///  baud rate according to the baudRate parameter in the constructor
 
-  bool openPort() {
+  Future<bool> openPort() async {
     final portConfig = SerialPortConfig();
     portConfig.baudRate = baudRate;
     portConfig.parity = SerialPortParity.none;
@@ -57,10 +60,10 @@ class SerialPortHandler {
           portConfig; // Set the port configuration immedietly after opening the port
       isPortOpen = true;
       log('Port opened successfully');
-      SerialPortReader reader = SerialPortReader(serialPort!);
+      reader = SerialPortReader(serialPort!);
       reader.stream.listen((data) {
-        _receivedDataController.add(String.fromCharCodes(data));
-        _receivedBytesController.add(data);
+        receivedDataController.add(String.fromCharCodes(data));
+        receivedBytesController.add(data);
       });
 
       return true;

@@ -45,6 +45,8 @@ int main(void)
         {
             uint8_t note = (value & 0xff) - '0';
             play_note(note, 127);
+            uart_putc(note + '0');
+            
         }
     }
 
@@ -63,7 +65,7 @@ ISR(TIMER0_OVF_vect)
     static uint8_t index = 0;
     if (index >= 255)
     {
-        uart_putc('a');
+       // uart_putc('0');
         index = 0;
     }
     else

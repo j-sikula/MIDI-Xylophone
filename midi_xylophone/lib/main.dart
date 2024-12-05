@@ -37,7 +37,8 @@ class ExampleApp extends StatefulWidget {
 
 class ExampleAppState extends State<ExampleApp> {
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey<SerialPortSelectorState> _serialPortMIDISourceKey = GlobalKey();
+  final GlobalKey<SerialPortSelectorState> _serialPortMIDISourceKey =
+      GlobalKey();
 
   @override
   void initState() {
@@ -54,9 +55,7 @@ class ExampleAppState extends State<ExampleApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('MIDIx Xylophone'),
-        ),
+        
         body: Column(
           children: <Widget>[
             Container(
@@ -65,14 +64,19 @@ class ExampleAppState extends State<ExampleApp> {
               child: Text("MIDIx source",
                   style: Theme.of(context).textTheme.headlineLarge),
             ),
-            SerialPortSelector(key: _serialPortMIDISourceKey),
+            Container(
+              alignment: Alignment.topLeft,
+              height: 200,
+              child: SerialPortSelector(key: _serialPortMIDISourceKey),
+            ),
             Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.all(10),
               child: Text("Xylophone - MIDIx target",
                   style: Theme.of(context).textTheme.headlineLarge),
             ),
-            SerialPortSelector(keySerialPortMIDISource: _serialPortMIDISourceKey),
+            SerialPortSelector(
+                keySerialPortMIDISource: _serialPortMIDISourceKey),
           ],
         ),
       ),
