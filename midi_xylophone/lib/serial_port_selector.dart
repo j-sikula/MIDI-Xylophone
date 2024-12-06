@@ -8,7 +8,6 @@ import 'package:midi_xylophone/control/serial_port_handler.dart';
 import 'package:midi_xylophone/control/serial_port_handler_android.dart';
 import 'package:midi_xylophone/serial_monitor.dart';
 
-
 /// SerialPortSelector widget
 
 class SerialPortSelector extends StatefulWidget {
@@ -37,19 +36,24 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
     _getAvailablePorts();
   }
 
+  /// Gets the available ports
+  ///
+  /// If the platform Android, uses the getAvailablePorts function from the serial_port_handler_android.dart file
   void _getAvailablePorts() async {
-    _availablePorts = await getAvailablePorts();
+    List<String> availablePorts;
+    if (Platform.isAndroid) {
+      availablePorts = await getAvailablePorts();
+    } else {
+      availablePorts = SerialPort.availablePorts;
+    }
     setState(() {
-       if (Platform.isAndroid) {
-        
-       } else {
-        _availablePorts = SerialPort.availablePorts;
-       }
-      
+      _availablePorts = availablePorts;
     });
   }
 
   /// Callback function to open and close the selected port
+  ///
+  ///
   void openAndClosePort() async {
     if (_selectedPort != null) {
       if (serialPortHandler == null ||
@@ -100,7 +104,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
       widget.keySerialPortMIDISource!.currentState!.serialPortHandler!
           .receivedBytes!
           .listen((Uint8List data) {
-        serialPortHandler!.serialPort!.write(data);
+        serialPortHandler!.writeData(data);
       });
 
       return true;
@@ -112,11 +116,16 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
+    final screenSize = MediaQuery.of(context)
+        .size; // Used for chaaing the width of the dropdown menu; Column or Row
+    List<Widget> serialPortSelectorChildren = [
+      Row(children: [
         Container(
           margin: const EdgeInsets.all(10),
           child: DropdownMenu<String>(
+            width: screenSize.width < 500
+                ? screenSize.width * 0.7 // For smaller screens
+                : null,
             enabled: !isPortOpen,
             initialSelection: _selectedPort,
             label: const Text('Select Port'),
@@ -136,23 +145,48 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(left: 10),
+          margin: const EdgeInsets.all(10),
           child: ElevatedButton(
             onPressed: () {
               _getAvailablePorts(); // Refreshes the available ports
-              openAndClosePort();
             },
-            child: Text(openCloseBtnLabel),
+            child: const Icon(Icons.refresh),
           ),
         ),
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.all(10),
-            child: SerialMonitor(
-                key: _serialMonitorKey, serialPortHandler: serialPortHandler),
-          ),
+      ]),
+      Container(
+        margin: const EdgeInsets.only(left: 10),
+        child: ElevatedButton(
+          onPressed: () {
+            _getAvailablePorts(); // Refreshes the available ports
+            openAndClosePort();
+          },
+          child: Text(openCloseBtnLabel),
         ),
-      ],
-    );
+      ),
+      Platform.isAndroid
+          ? Container(
+              margin: const EdgeInsets.all(10),
+              child: SerialMonitor(
+                  key: _serialMonitorKey, serialPortHandler: serialPortHandler),
+            )
+          : Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                child: SerialMonitor(
+                    key: _serialMonitorKey,
+                    serialPortHandler: serialPortHandler),
+              ),
+            )
+    ];
+    if (screenSize.width < 500) {
+      return Column(
+        children: serialPortSelectorChildren,
+      );
+    } else {
+      return Row(
+        children: serialPortSelectorChildren,
+      );
+    }
   }
 }

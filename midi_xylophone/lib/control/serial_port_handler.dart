@@ -7,22 +7,28 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 class SerialPortHandler {
   final int baudRate;
   final String portName;
+  final bool isCreatingSerialPort;
 
   bool isPortOpen = false; // Flag to check if the port is open
   bool tryOpenPortOnceAgain =
       true; // after closing port, try to open it only once again
   SerialPort? serialPort;
 
-  late SerialPortReader reader;
+  SerialPortReader? reader;
   late StreamController<String> receivedDataController;
   late StreamController<Uint8List> receivedBytesController;
   Stream<String>? receivedData;
   Stream<Uint8List>? receivedBytes;
+  
+  
 
   // Constructor
-  SerialPortHandler(this.baudRate, this.portName) {
+  SerialPortHandler(this.baudRate, this.portName, {this.isCreatingSerialPort = true}) {
     // Initialize the serial port
-    serialPort = SerialPort(portName);
+    if (isCreatingSerialPort) {
+      serialPort = SerialPort(portName);
+    }
+    
 
     receivedDataController = StreamController<String>.broadcast();
     receivedBytesController = StreamController<Uint8List>.broadcast();
@@ -33,7 +39,7 @@ class SerialPortHandler {
 
   /// Closes the serial port
   Future<bool> closePort() async{
-    reader.close();
+    reader!.close();
     if (serialPort!.close()) {
       isPortOpen = false;
 
@@ -61,7 +67,7 @@ class SerialPortHandler {
       isPortOpen = true;
       log('Port opened successfully');
       reader = SerialPortReader(serialPort!);
-      reader.stream.listen((data) {
+      reader!.stream.listen((data) {
         receivedDataController.add(String.fromCharCodes(data));
         receivedBytesController.add(data);
       });
@@ -76,5 +82,10 @@ class SerialPortHandler {
       log('Failed to open port');
       return false;
     }
+  }
+
+  /// Writes data to the serial port
+  void writeData(Uint8List data) {
+    serialPort!.write(data);
   }
 }

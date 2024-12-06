@@ -20,10 +20,12 @@ Future<List<String>> getAvailablePorts() async{
 }
 
 class SerialPortHandlerAndroid extends SerialPortHandler {
-  SerialPortHandlerAndroid(super.baudRate, super.portName);
+  SerialPortHandlerAndroid(super.baudRate, super.portName) : super(isCreatingSerialPort: false);
 
   UsbPort? usbPort;
   late StreamSubscription<Uint8List> _subscription;
+  
+  /// Closes the serial port  
 
   @override
   Future<bool> closePort() async {
@@ -74,6 +76,12 @@ class SerialPortHandlerAndroid extends SerialPortHandler {
     });
 
     log('Port opened successfully');
+    isPortOpen = true;
     return true;
+  }
+
+  @override
+  void writeData(Uint8List data) {
+    usbPort!.write(data);
   }
 }

@@ -66,7 +66,6 @@ class ExampleAppState extends State<ExampleApp> {
             ),
             Container(
               alignment: Alignment.topLeft,
-              height: 200,
               child: SerialPortSelector(key: _serialPortMIDISourceKey),
             ),
             Container(
