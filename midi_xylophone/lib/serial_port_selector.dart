@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:midi_xylophone/control/serial_port_handler.dart';
 import 'package:midi_xylophone/control/serial_port_handler_android.dart';
+import 'package:midi_xylophone/note_displayer.dart';
 import 'package:midi_xylophone/serial_monitor.dart';
 
 /// SerialPortSelector widget
@@ -155,6 +156,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
         ),
       ]),
       Container(
+        alignment: Alignment.topLeft,
         margin: const EdgeInsets.only(left: 10),
         child: ElevatedButton(
           onPressed: () {
@@ -164,16 +166,16 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
           child: Text(openCloseBtnLabel),
         ),
       ),
-      Platform.isAndroid
+      screenSize.width < 500
           ? Container(
               margin: const EdgeInsets.all(10),
-              child: SerialMonitor(
+              child: NoteDisplayer(
                   key: _serialMonitorKey, serialPortHandler: serialPortHandler),
             )
           : Expanded(
               child: Container(
                 margin: const EdgeInsets.all(10),
-                child: SerialMonitor(
+                child: NoteDisplayer(
                     key: _serialMonitorKey,
                     serialPortHandler: serialPortHandler),
               ),

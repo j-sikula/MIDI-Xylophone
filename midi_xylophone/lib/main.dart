@@ -54,6 +54,9 @@ class ExampleAppState extends State<ExampleApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(useMaterial3: true, brightness: Brightness.light),
+      darkTheme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
+      themeMode: ThemeMode.system,
       home: Scaffold(
         
         body: Column(
@@ -62,7 +65,7 @@ class ExampleAppState extends State<ExampleApp> {
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.all(10),
               child: Text("MIDIx source",
-                  style: Theme.of(context).textTheme.headlineLarge),
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: Theme.of(context).colorScheme.primary)),
             ),
             Container(
               alignment: Alignment.topLeft,
@@ -72,7 +75,7 @@ class ExampleAppState extends State<ExampleApp> {
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.all(10),
               child: Text("Xylophone - MIDIx target",
-                  style: Theme.of(context).textTheme.headlineLarge),
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: Theme.of(context).colorScheme.primary)),
             ),
             SerialPortSelector(
                 keySerialPortMIDISource: _serialPortMIDISourceKey),
