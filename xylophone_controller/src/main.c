@@ -65,7 +65,6 @@ ISR(TIMER0_OVF_vect)
     static uint8_t index = 0;
     if (index >= 255)
     {
-       // uart_putc('0');
         index = 0;
     }
     else

@@ -7,10 +7,10 @@
 * Ilja Zhigachev, Mark Kovychev (responsible for [Xylophone controller](xylophone_controller))
 
 ## Hardware description
+From MIDI source protocol via USB (UART) is sent to PC/Smartphone, then via USB (UART) is sent to MIDI Target, note is played on Xylophone and played note is sent back via USB to PC/Smartphone.
 
 ![schematic](images/SchematicDiagram.jpg)
 
-Describe your implementation and include block or circuit diagram(s).
 
 ## Software description
 
