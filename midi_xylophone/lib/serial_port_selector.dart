@@ -7,7 +7,7 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:midi_xylophone/control/serial_port_handler.dart';
 import 'package:midi_xylophone/control/serial_port_handler_android.dart';
 import 'package:midi_xylophone/note_displayer.dart';
-import 'package:midi_xylophone/serial_monitor.dart';
+
 
 /// SerialPortSelector widget
 
@@ -30,7 +30,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
   String openCloseBtnLabel = 'Open Port';
   bool isPortOpen =
       false; // disables dropdown when port is open, prevents changing port while port is open
-  final GlobalKey<SerialMonitorState> _serialMonitorKey = GlobalKey();
+  final GlobalKey<NoteDisplayerState> _noteDisplayerKey = GlobalKey();  // Key for accessing the state of NoteDisplayer widget
   @override
   void initState() {
     super.initState();
@@ -95,7 +95,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
   }
 
   /// Sends data to the Xylophone
-  /// Listens to the received data from the keySerialPortMIDISource
+  /// Listens to the received data from the MIDI source, accessed via the keySerialPortMIDISource
   /// writes the data to the serial port
   /// Returns true if successful begin of data transfer
   bool sendDataToXylophone() {
@@ -115,6 +115,13 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
     }
   }
 
+  /// Builds the SerialPortSelector widget
+  /// Returns a Column or Row widget according to the screen size
+  /// - dropdown menu for selecting the port
+  /// - refresh serial ports button
+  /// - open/close button
+  /// - NoteDisplayer widget
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context)
@@ -126,7 +133,7 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
           child: DropdownMenu<String>(
             width: screenSize.width < 500
                 ? screenSize.width * 0.7 // For smaller screens
-                : null,
+                : 150,  // For larger screens
             enabled: !isPortOpen,
             initialSelection: _selectedPort,
             label: const Text('Select Port'),
@@ -170,13 +177,13 @@ class SerialPortSelectorState extends State<SerialPortSelector> {
           ? Container(
               margin: const EdgeInsets.all(10),
               child: NoteDisplayer(
-                  key: _serialMonitorKey, serialPortHandler: serialPortHandler),
+                  key: _noteDisplayerKey, serialPortHandler: serialPortHandler),
             )
           : Expanded(
               child: Container(
                 margin: const EdgeInsets.all(10),
                 child: NoteDisplayer(
-                    key: _serialMonitorKey,
+                    key: _noteDisplayerKey,
                     serialPortHandler: serialPortHandler),
               ),
             )

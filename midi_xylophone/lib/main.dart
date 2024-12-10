@@ -2,6 +2,7 @@
 MIT License
 
 Copyright (c) 2020 J-P Nurmi <jpnurmi@gmail.com>
+Copyright (c) 2024 Josef Sikula
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,31 +27,27 @@ SOFTWARE.
 import 'package:flutter/material.dart';
 import 'package:midi_xylophone/serial_port_selector.dart';
 
-void main() => runApp(const ExampleApp());
+/// Main function of the app
+void main() => runApp(const MIDIXylophoneApp());
 
-class ExampleApp extends StatefulWidget {
-  const ExampleApp({super.key});
+/// Main app widget
+class MIDIXylophoneApp extends StatefulWidget {
+  const MIDIXylophoneApp({super.key});
 
   @override
-  ExampleAppState createState() => ExampleAppState();
+  MIDIXylophoneAppState createState() => MIDIXylophoneAppState();
 }
 
-class ExampleAppState extends State<ExampleApp> {
-  final ScrollController _scrollController = ScrollController();
+class MIDIXylophoneAppState extends State<MIDIXylophoneApp> {
+  /// Key for accessing the MIDI source - SerialPortSelector
   final GlobalKey<SerialPortSelectorState> _serialPortMIDISourceKey =
       GlobalKey();
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
+  /// Build widgets of the app
+  /// sets the theme according to system (light/dark)
+  /// and creates the app layout
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -61,22 +58,26 @@ class ExampleAppState extends State<ExampleApp> {
         
         body: Column(
           children: <Widget>[
+            // Title
             Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.all(10),
               child: Text("MIDIx source",
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: Theme.of(context).colorScheme.primary)),
             ),
+            // Serial port selector for MIDI source
             Container(
               alignment: Alignment.topLeft,
               child: SerialPortSelector(key: _serialPortMIDISourceKey),
             ),
+            // Title
             Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.all(10),
               child: Text("Xylophone - MIDIx target",
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: Theme.of(context).colorScheme.primary)),
             ),
+            // Serial port selector for MIDI target
             SerialPortSelector(
                 keySerialPortMIDISource: _serialPortMIDISourceKey),
           ],

@@ -5,6 +5,8 @@ import 'dart:typed_data';
 import 'package:midi_xylophone/control/serial_port_handler.dart';
 import 'package:usb_serial/usb_serial.dart';
 
+/// Gets the available ports
+/// static asynchronous method
 Future<List<String>> getAvailablePorts() async{
   List<String> ports = [];
 
@@ -19,9 +21,15 @@ Future<List<String>> getAvailablePorts() async{
   return ports;
 }
 
+/// Serial port handler for Android, 
+/// Extends the SerialPortHandler class,
+/// used for handling serial port operations on Android, 
+/// parameters: [baudRate], [portName]
 class SerialPortHandlerAndroid extends SerialPortHandler {
+  /// Constructor, [isCreatingSerialPort] used for creating SerialPort for windows
   SerialPortHandlerAndroid(super.baudRate, super.portName) : super(isCreatingSerialPort: false);
 
+  /// Serial port object
   UsbPort? usbPort;
   late StreamSubscription<Uint8List> _subscription;
   
@@ -41,7 +49,10 @@ class SerialPortHandlerAndroid extends SerialPortHandler {
     }
   }
 
-  /// Opens the serial port
+  /// Opens the serial port,
+  /// returns true if port is opened successfully. 
+  /// Baud rate according to constructor, type 8N1
+  /// streams filled with received data
   @override
   Future<bool> openPort() async {
     List<UsbDevice> devices = await UsbSerial.listDevices();
@@ -80,6 +91,7 @@ class SerialPortHandlerAndroid extends SerialPortHandler {
     return true;
   }
 
+  /// Writes data to the serial port
   @override
   void writeData(Uint8List data) {
     usbPort!.write(data);

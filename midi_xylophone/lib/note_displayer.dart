@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:midi_xylophone/control/serial_port_handler.dart';
 
+/// NoteDisplayer widget
+/// Displays the current note and the previous notes
+/// when not decoded as a note, displays the raw data
 class NoteDisplayer extends StatefulWidget {
   final SerialPortHandler? serialPortHandler;
 
@@ -12,12 +15,15 @@ class NoteDisplayer extends StatefulWidget {
   NoteDisplayerState createState() => NoteDisplayerState();
 }
 
+/// State class for the NoteDisplayer widget
 class NoteDisplayerState extends State<NoteDisplayer> {
   String previousNotes = '';
   String currentNote = '';
   final ScrollController _scrollController = ScrollController();
   final String notesRepresentation = 'CDEFGAHC';
 
+  /// Clears the display text
+  /// not used in the project
   void clearDisplayText() {
     setState(() {
       previousNotes = '';
@@ -30,6 +36,9 @@ class NoteDisplayerState extends State<NoteDisplayer> {
     super.dispose();
   }
 
+  /// Builds the widget
+  /// Displays the current note and the previous notes
+  /// Uses a StreamBuilder to display the received data stream
   @override
   Widget build(BuildContext context) {
     return SizedBox(
