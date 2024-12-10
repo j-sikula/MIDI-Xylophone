@@ -8,6 +8,8 @@
 
 ## Hardware description
 
+![schematic](images/SchematicDiagram.jpg)
+
 Describe your implementation and include block or circuit diagram(s).
 
 ## Software description
@@ -15,7 +17,7 @@ Describe your implementation and include block or circuit diagram(s).
 Include flowcharts/state diagrams of your algorithm(s) and direct links to the source files in PlatformIO `src` or `lib` folders. Present the libraries you used in the project.
 
 ### GUI
-
+[Documentation](https://raw.githack.com/j-sikula/MIDI-Xylophone/refs/heads/main/midi_xylophone/doc/api/index.html)
 
 ### MIDI Source
 [Documentation](https://raw.githack.com/j-sikula/MIDI-Xylophone/refs/heads/main/midi_source/documentation/html/group__memory__song.html)
@@ -29,3 +31,4 @@ Describe how to use the application. Add photos or videos of your application.
 
 1. [AVR course GitHub](https://github.com/tomas-fryza/avr-course)
 2. [GitHub Copilot for VS Code](https://code.visualstudio.com/docs/copilot/overview)
+3. [Flutter](https://docs.flutter.dev/get-started/install/windows/desktop)
