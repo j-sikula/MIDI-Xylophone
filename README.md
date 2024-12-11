@@ -119,5 +119,6 @@ Used libraries:
 7. [Visual Studio Community 2022](https://visualstudio.microsoft.com/vs/community/)
 8. [MIDI tutorial](https://learn.sparkfun.com/tutorials/midi-tutorial/all)
 9. [app.diagrams](https://app.diagrams.net/)
+10. [app.smartdraw](https://app.smartdraw.com)
 
 
