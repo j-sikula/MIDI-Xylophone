@@ -1,13 +1,25 @@
+/**
+ * @file xylophone.c
+ * @brief Implementation of xylophone control using GPIO on AVR microcontrollers.
+ *
+ * This file contains the implementation of functions for controlling the xylophone,
+ * including note initialization, playback, and timing routines.
+ */
+
 #include "xylophone.h"
 #include "gpio.h"
 #include "uart.h"
 
+/// Currently active note (0-7)
 volatile uint8_t currentNote = 0;
+/// Indicates if a note is currently playing (1 = yes, 0 = no)
 volatile uint8_t is_note_playing = 0;
+/// Remaining cycles for the current note duration
 volatile uint8_t timer_cycle = 0;
 
 void init_xylophone()
 {
+    // Initialize GPIO pins as output and set them LOW
     GPIO_mode_output(&DDRD, NOTE_C1);
     GPIO_mode_output(&DDRD, NOTE_D1);
     GPIO_mode_output(&DDRD, NOTE_E1);
@@ -29,7 +41,7 @@ void init_xylophone()
 
 void play_note(uint8_t note, uint8_t velocity)
 {
-    if (note >= 0 && note < 8 && !is_note_playing)
+    if (note < 8 && !is_note_playing)
     {
         write_high_note(note);
         currentNote = note;
@@ -45,31 +57,24 @@ void write_high_note(uint8_t note)
     case 0:
         GPIO_write_high(&PORTD, NOTE_C1);
         break;
-
     case 1:
         GPIO_write_high(&PORTD, NOTE_D1);
         break;
-
     case 2:
         GPIO_write_high(&PORTD, NOTE_E1);
         break;
-
     case 3:
         GPIO_write_high(&PORTD, NOTE_F1);
         break;
-
     case 4:
         GPIO_write_high(&PORTD, NOTE_G1);
         break;
-
     case 5:
         GPIO_write_high(&PORTD, NOTE_A1);
         break;
-
     case 6:
         GPIO_write_high(&PORTB, NOTE_H1);
         break;
-
     case 7:
         GPIO_write_high(&PORTB, NOTE_C2);
         break;
@@ -83,31 +88,24 @@ void write_low_note(uint8_t note)
     case 0:
         GPIO_write_low(&PORTD, NOTE_C1);
         break;
-
     case 1:
         GPIO_write_low(&PORTD, NOTE_D1);
         break;
-
     case 2:
         GPIO_write_low(&PORTD, NOTE_E1);
         break;
-
     case 3:
         GPIO_write_low(&PORTD, NOTE_F1);
         break;
-
     case 4:
         GPIO_write_low(&PORTD, NOTE_G1);
         break;
-
     case 5:
         GPIO_write_low(&PORTD, NOTE_A1);
         break;
-
     case 6:
         GPIO_write_low(&PORTB, NOTE_H1);
         break;
-
     case 7:
         GPIO_write_low(&PORTB, NOTE_C2);
         break;
@@ -116,7 +114,7 @@ void write_low_note(uint8_t note)
 
 void timer_routine()
 {
-    if (timer_cycle != 0)
+    if (timer_cycle > 0)
     {
         timer_cycle--;
     }

@@ -1,4 +1,40 @@
+/**
+ * @mainpage MIDI Xylophone Controller
+ *
+ * @section intro_sec Introduction
+ *
+ * This project is a MIDI Xylophone Controller that uses an ATmega328P microcontroller
+ * to receive simplified MIDI commands via UART and play corresponding notes on a xylophone.
+ *
+ * @section dependencies_sec Dependencies
+ *
+ * - ATmega328P microcontroller
+ * - PlatformIO
+ * - Peter Fleury's UART library
+ * - Timer library
+ * - GPIO library
+ *
+ * @section author_sec Authors
+ * - Mark Kovychev (2024)
+ * - Ilia Zhigachev (2024)
+ * - Josef Sikula (2024)
+ * - Peter Fleury (2015)
+ * - Tomas Fryza (2018-2024)
+ * 
+ *
+ * @section license_sec License
+ *
+ * MIT License, see the LICENSE file;
+ * (c) 2015 Peter Fleury, GNU General Public License Version 3; 
+ * (c) 2019-2024 Tomas Fryza, MIT license
+ */
+
 /*
+
+
+ @file main.c
+ @defgroup main Main program
+
  * Use USART unit and transmit data between ATmega328P and computer.
  * (c) 2018-2024 Tomas Fryza, MIT license
  * (c) 2024 Mark Kovychev, Josef Sikula, MIT license
@@ -46,7 +82,6 @@ int main(void)
             uint8_t note = (value & 0xff) - '0';
             play_note(note, 127);
             uart_putc(note + '0');
-            
         }
     }
 
@@ -61,7 +96,7 @@ int main(void)
  */
 ISR(TIMER0_OVF_vect)
 {
-   
+
     static uint8_t index = 0;
     if (index >= 255)
     {
