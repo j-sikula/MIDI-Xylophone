@@ -30,7 +30,6 @@ Values of notes changed to range, which allows controlling xylophone using seria
 | '7' | 55 | C&#x2082; |
 
 
-Include flowcharts/state diagrams of your algorithm(s) and direct links to the source files in PlatformIO `src` or `lib` folders. Present the libraries you used in the project.
 
 ### MIDI Target
 [Documentation](https://raw.githack.com/j-sikula/MIDI-Xylophone/refs/heads/main/xylophone_controller/doc/html/index.html)
