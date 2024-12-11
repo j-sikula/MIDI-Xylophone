@@ -29,9 +29,7 @@
  * (c) 2019-2024 Tomas Fryza, MIT license
  */
 
-/*
-
-
+/**
  @file main.c
  @defgroup main Main program
 
@@ -52,10 +50,10 @@
 #include "xylophone.h"
 
 // -- Function definitions -------------------------------------------
-/*
+/**
  * Function: Main function where the program execution begins
- * Purpose:  Use Timer/Counter1 and transmit UART data.
- * Returns:  none
+ * Purpose:  Sets Timer/Counter1, receives and transmits UART data.
+ * Returns:  none (forever loop)
  */
 int main(void)
 {
@@ -90,22 +88,24 @@ int main(void)
 }
 
 // -- Interrupt service routines -------------------------------------
-/*
+/**
  * Function: Timer/Counter1 overflow interrupt
  * Purpose:  Note pulse generation
  */
 ISR(TIMER0_OVF_vect)
 {
-
+    // used for debugging
     static uint8_t index = 0;
     if (index >= 255)
     {
+        //uart_putc('0'); // Send '0' to UART every 255 ms
         index = 0;
     }
     else
     {
         index++;
     }
-
+    
+    // Call the timer routine
     timer_routine();
 }

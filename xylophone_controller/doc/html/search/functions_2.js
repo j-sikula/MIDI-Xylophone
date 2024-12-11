@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['play_5fnote_0',['play_note',['../xylophone_8c.html#acdbd6cc019a0f14bc825074c2442cf45',1,'play_note(uint8_t note, uint8_t velocity):&#160;xylophone.c'],['../xylophone_8h.html#acdbd6cc019a0f14bc825074c2442cf45',1,'play_note(uint8_t note, uint8_t velocity):&#160;xylophone.c']]]
+  ['main_0',['main',['../main_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main.c']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['xylophone_20h_0',['Xylophone &lt;xylophone.h&gt;',['../group__xylophone.html',1,'']]],
-  ['xylophone_20xylophone_20h_1',['Xylophone &lt;xylophone.h&gt;',['../group__xylophone.html',1,'']]]
+  ['timer_20h_0',['Timer Library &lt;timer.h&gt;',['../group__fryza__timer.html',1,'']]],
+  ['timer_20library_20timer_20h_1',['Timer Library &lt;timer.h&gt;',['../group__fryza__timer.html',1,'']]]
 ];

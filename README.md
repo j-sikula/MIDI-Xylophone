@@ -35,6 +35,17 @@ Include flowcharts/state diagrams of your algorithm(s) and direct links to the s
 ### MIDI Target
 [Documentation](https://raw.githack.com/j-sikula/MIDI-Xylophone/refs/heads/main/xylophone_controller/doc/html/index.html)
 
+Receives data from UART, when valid value, playes corresponding note, sends back received value via UART. Prepared for playing with different velocities, but hardware is not enough precise for implementing, so it could not have been implemented.
+
+Function [`main`](xylophone_controller/src/main.c) initialize UART and GPIOs, in forever loop is polling for UART message.
+
+![main function](images/mainController.jpg)
+
+Function [`play_note`](xylophone_controller/lib/xylophone/xylophone.c) sets pin to HIGH and sets pulse width, function [`timer_routine`](xylophone_controller/lib/xylophone/xylophone.c) sets pin to LOW after defined time:
+
+![playing note](images/PlayingNote.jpg)
+
+
 ### GUI
 [Documentation](https://raw.githack.com/j-sikula/MIDI-Xylophone/refs/heads/main/midi_xylophone/doc/api/index.html)
 
@@ -89,7 +100,13 @@ Used libraries:
 
 ## Instructions and photos
 
-Describe how to use the application. Add photos or videos of your application.
+1. upload firmware to MCUs
+2. connect them to PC/Smartphone using USB
+3. run application midi_xylophone
+4. select port for MIDI Source and open it
+5. select port for MIDI Target and open it
+6. play tones or melodies on MIDI Source
+
 [Video link](https://youtu.be/Qzyhogsb7iQ?si=1Z-Hl84LYfKJFDZ6)
 
 ## References and tools

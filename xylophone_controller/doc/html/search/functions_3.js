@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['timer_5froutine_0',['timer_routine',['../xylophone_8c.html#aad6e6c7a87aef30d43d64b448a054d70',1,'timer_routine():&#160;xylophone.c'],['../xylophone_8h.html#aad6e6c7a87aef30d43d64b448a054d70',1,'timer_routine():&#160;xylophone.c']]]
+  ['play_5fnote_0',['play_note',['../xylophone_8c.html#acdbd6cc019a0f14bc825074c2442cf45',1,'play_note(uint8_t note, uint8_t velocity):&#160;xylophone.c'],['../xylophone_8h.html#acdbd6cc019a0f14bc825074c2442cf45',1,'play_note(uint8_t note, uint8_t velocity):&#160;xylophone.c']]]
 ];
