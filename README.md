@@ -38,9 +38,25 @@ Include flowcharts/state diagrams of your algorithm(s) and direct links to the s
 ### GUI
 [Documentation](https://raw.githack.com/j-sikula/MIDI-Xylophone/refs/heads/main/midi_xylophone/doc/api/index.html)
 
+It is an application developed using Flutter, implements [`flutter_libserialport`](https://pub.dev/packages/flutter_libserialport) (Windows application) and [`usb_serial`](https://pub.dev/packages/usb_serial) (Android application) for connecting MIDI source and MIDI target using UART via USB.
+
+Visualizes data from MIDI Source, sends them to MIDI Target and processed data are sent back and visualized as well.
+
+![Windows application appearance](images/windowsApp.jpg)
+
+Widgets for selecting serial ports are declared in [`serial_port_selector.dart`](midi_xylophone/lib/serial_port_selector.dart). Refresh button is used for updating available ports.
+
+Logic of callback function Open/Close Port:
 
 ![Open or Close Port](images/OpenOrClosePort.jpg)
 
+[`serial_port_handler.dart`](midi_xylophone/lib/control/serial_port_handler.dart) is used for managing logic behind serial port on Windows application, openPort, closePort are asyc, because child [`serial_port_handler_android.dart`](midi_xylophone/lib/control/serial_port_handler_android.dart) uses async function for opening and closing port.
+
+[`note_displayer.dart`](midi_xylophone/lib/note_displayer.dart) uses stream from [`serial_port_handler.dart`](midi_xylophone/lib/control/serial_port_handler.dart) and notes are decoded and diplayed using StreamBuilder, when note is not decoded, raw data are shown in ASCII.
+
+Structure of used Streams:
+
+![Streams](images/Streams.jpg)
 
 ### MIDI Source
 [Documentation](https://raw.githack.com/j-sikula/MIDI-Xylophone/refs/heads/main/midi_source/documentation/html/group__memory__song.html)
